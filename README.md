@@ -1,2 +1,20 @@
-# Personal-Homesoc
-I wanted a project that feels like real security work, not just a script. HomeSOC is my mini SOC on my laptop: it ingests auth logs, normalizes them, runs YAML detection rules, and creates alerts you can triage with notes and evidence.
+# HomeSOC (local mini-SIEM)
+HomeSOC is a local-first SOC-style log pipeline:
+- ingest Linux auth logs
+- normalize to a single schema (SQLite)
+- run Sigma-inspired YAML detection rules
+- generate MITRE-mapped alerts
+- triage workflow: status + analyst notes + evidence
+
+## Demo (60 seconds)
+1) Load sample logs
+2) Run rules
+3) Open Alerts and click an alert to see evidence
+
+## Run locally
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
