@@ -1,0 +1,50 @@
+- id: R-001
+  name: "Root login success (SSH)"
+  description: "Successful login as root can be risky and is often disabled in hardened systems."
+  mitre:
+    technique: "T1078"
+    tactic: "Defense Evasion"
+  severity: "high"
+  match:
+    source: "linux_auth"
+    type: "event"
+    where:
+      event_type: "auth_success"
+    field: "user"
+    op: "equals"
+    value: "root"
+    summary: "Successful root login detected"
+
+- id: R-002
+  name: "Repeated SSH failures from one IP (possible brute force)"
+  description: "Detects multiple failed authentications from the same IP within a short window."
+  mitre:
+    technique: "T1110"
+    tactic: "Credential Access"
+  severity: "high"
+  match:
+    source: "linux_auth"
+    type: "threshold"
+    field: "src_ip"
+    where:
+      event_type: "auth_fail"
+    threshold: 5
+    window_minutes: 10
+    summary: "Possible SSH brute force, repeated failures from one IP"
+
+- id: R-003
+  name: "Login from suspicious username pattern"
+  description: "Flags logins for users that look auto-generated or suspicious (example heuristic)."
+  mitre:
+    technique: "T1078"
+    tactic: "Initial Access"
+  severity: "medium"
+  match:
+    source: "linux_auth"
+    type: "event"
+    where:
+      event_type: "auth_success"
+    field: "user"
+    op: "regex"
+    value: "^(test|admin|guest|user\\d+)$"
+    summary: "Suspicious username successful login"

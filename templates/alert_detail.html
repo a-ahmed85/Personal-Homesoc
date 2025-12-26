@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h2 style="margin-top:0;">Alert #{{ alert.id }}</h2>
+    <div class="row">
+      <div class="pill sev-{{ alert.severity }}">severity: {{ alert.severity }}</div>
+      <div class="pill">status: {{ alert.status }}</div>
+      {% if alert.mitre_technique %}
+        <div class="pill">MITRE: {{ alert.mitre_technique }} ({{ alert.mitre_tactic }})</div>
+      {% endif %}
+    </div>
+
+    <p style="margin-bottom:6px;"><strong>Rule:</strong> {{ alert.rule_name }} ({{ alert.rule_id }})</p>
+    <p style="margin-top:0;"><strong>Summary:</strong> {{ alert.summary }}</p>
+
+    <form action="/alerts/{{ alert.id }}/status" method="post" class="row" style="align-items:center;">
+      <select name="status">
+        <option value="new" {% if alert.status=='new' %}selected{% endif %}>new</option>
+        <option value="triaged" {% if alert.status=='triaged' %}selected{% endif %}>triaged</option>
+        <option value="true_positive" {% if alert.status=='true_positive' %}selected{% endif %}>true_positive</option>
+        <option value="false_positive" {% if alert.status=='false_positive' %}selected{% endif %}>false_positive</option>
+      </select>
+      <button class="btn" type="submit">Update status</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Evidence</h3>
+    <pre>{{ evidence | tojson(indent=2) }}</pre>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Analyst notes</h3>
+    <form action="/alerts/{{ alert.id }}/note" method="post">
+      <textarea name="note" placeholder="Write what you observed, why you think it is TP/FP, next steps..."></textarea>
+      <button class="btn" type="submit" style="margin-top:10px;">Add note</button>
+    </form>
+
+    <div style="margin-top:14px;">
+      {% for n in notes %}
+        <div class="card" style="margin:10px 0;">
+          <div style="opacity:.75; font-size:12px;">{{ n.created_ts }}</div>
+          <div>{{ n.note }}</div>
+        </div>
+      {% endfor %}
+      {% if notes|length == 0 %}
+        <div style="opacity:.7;">No notes yet.</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

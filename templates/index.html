@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h2 style="margin-top:0;">Ingest logs</h2>
+    <div class="row">
+      <div class="pill">Events: {{ counts.events }}</div>
+      <div class="pill">Alerts: {{ counts.alerts }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Upload Linux auth.log</h3>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input class="btn" type="file" name="file" accept=".log,.txt" required />
+      <button class="btn" type="submit">Upload</button>
+    </form>
+    <p style="opacity:.75; margin-bottom:0;">
+      Tip: If you do not have a log file, load the included sample dataset.
+    </p>
+    <form action="/load-sample" method="post" style="margin-top:10px;">
+      <button class="btn" type="submit">Load sample logs</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Run detections</h3>
+    <form action="/run-rules" method="post">
+      <button class="btn" type="submit">Run YAML rules and generate alerts</button>
+    </form>
+    <p style="opacity:.75; margin-bottom:0;">
+      Rules live in <code>rules/default_rules.yml</code>
+    </p>
+  </div>
+{% endblock %}

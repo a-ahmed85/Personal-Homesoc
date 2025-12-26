@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h2 style="margin-top:0;">Alerts</h2>
+    <form method="get" action="/alerts" class="row" style="align-items:center;">
+      <input type="text" name="q" placeholder="Search rule or summary" value="{{ q or '' }}" />
+      <select name="severity">
+        <option value="">All severities</option>
+        <option value="high" {% if severity=='high' %}selected{% endif %}>high</option>
+        <option value="medium" {% if severity=='medium' %}selected{% endif %}>medium</option>
+        <option value="low" {% if severity=='low' %}selected{% endif %}>low</option>
+      </select>
+      <select name="status">
+        <option value="">All statuses</option>
+        <option value="new" {% if status=='new' %}selected{% endif %}>new</option>
+        <option value="triaged" {% if status=='triaged' %}selected{% endif %}>triaged</option>
+        <option value="true_positive" {% if status=='true_positive' %}selected{% endif %}>true_positive</option>
+        <option value="false_positive" {% if status=='false_positive' %}selected{% endif %}>false_positive</option>
+      </select>
+      <button class="btn" type="submit">Filter</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Rule</th>
+          <th>Summary</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in alerts %}
+        <tr>
+          <td><a href="/alerts/{{ a.id }}">{{ a.id }}</a></td>
+          <td class="sev-{{ a.severity }}">{{ a.severity }}</td>
+          <td>{{ a.status }}</td>
+          <td>{{ a.rule_name }}</td>
+          <td>{{ a.summary }}</td>
+          <td style="opacity:.75;">{{ a.created_ts }}</td>
+        </tr>
+        {% endfor %}
+        {% if alerts|length == 0 %}
+        <tr><td colspan="6" style="opacity:.7;">No alerts yet. Load sample logs, then run rules.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
